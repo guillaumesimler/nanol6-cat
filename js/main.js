@@ -4,6 +4,7 @@
 // ============================== Model ============================ 
 var model = {
 	currentCat: null,
+	AdminMode: false,
 	Cats:[{
 		CatName: 'Matoux',
 		CatUrl: 'images/cat1.jpg',
@@ -43,6 +44,7 @@ var octopus = {
 
 		catListview.init();
 		catView.init();
+		AdminView.init();
 	},
 
 	getCat: function(){
@@ -60,7 +62,24 @@ var octopus = {
 	setCat: function(cat) {
 		model.currentCat = cat;
 
+	},
+
+	setAdmin: function() {
+		if (model.AdminMode) {
+			model.AdminMode = false;
+		} else {
+			model.AdminMode = true;
+		}
+	},
+
+	saveAdmin: function() {
+		model.currentCat.CatName = $("#cat-I-Name").val();
+		model.currentCat.CatUrl= 'images/' +  $("#cat-I-Url").val();
+		model.currentCat.CatCount =	$("#cat-I-Count").val();
+
+		model.AdminMode = false;
 	}
+
 };
 
 
@@ -79,11 +98,13 @@ var catView = {
 	},
 
 	render: function() {
-		cat = octopus.getCat();
+		var cat = octopus.getCat();
 
 		$('#catheader').text('This pretty cat is called ' + cat.CatName);
 		$('#cattarget').attr('src', cat.CatUrl);
 		$('#catcount').text('It was clicked ' + cat.CatCount + ' time(s).');
+
+		AdminView.render();
 	}
 
 };
@@ -93,8 +114,10 @@ var catView = {
 var catListview = {
 
 	init: function() {
+		$('#cat-list').children().remove();
+
 		this.render(); 
-		this.move();
+		
 	},
 
 	render: function() {
@@ -106,6 +129,8 @@ var catListview = {
 			$('#cat-list').append('<li id="'+ catId +'"> This cat is called ' + cat.CatName +'</li>');
 			i++;
 		});
+
+		this.move();
 	},
 
 	move: function(){
@@ -123,10 +148,62 @@ var catListview = {
 
 
 		});
-
-		console.log('catListview.move')
 	}
 };
 
+	// -------------------- Admin View -------
 
+var AdminView = {
+
+	init: function(){
+		this.render();
+
+		//Use the admin Button
+
+		$('#AdminButton').click(function(e){
+			octopus.setAdmin();
+			AdminView.render();
+		});
+
+		// Use the cancel Button
+
+		$('#cat-B-Cancel').click(function(e) {
+			octopus.setAdmin();
+			AdminView.render();
+		});
+
+		// Use the saveButton
+
+		$('#cat-B-Save').click(function(e) {
+			octopus.saveAdmin();
+
+			$('#cat-list').children().remove();
+			
+			catListview.render();
+			catView.render();
+			AdminView.render();
+		});
+		
+	},
+
+	render: function(){
+
+		var cat = model.currentCat;
+
+		if (model.AdminMode) {
+			var RenderUrl = cat.CatUrl.replace('images/','');
+
+			$("#cat-I-Name").attr("value", cat.CatName);
+			$("#cat-I-Url").attr("value", RenderUrl);
+			$("#cat-I-Count").attr("value", cat.CatCount);
+			$("#AdminDisplay").show();
+		} else {
+			$("#AdminDisplay").hide();
+		}
+	}
+
+};
+
+
+// =================================== Running the program
 octopus.init();
