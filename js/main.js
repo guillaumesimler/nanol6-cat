@@ -1,118 +1,132 @@
 //Build a function to count the number of clicks
 
 
-// Variable declarations
-var CatImg= [
-	'images/cat1.jpg', 
-	'images/cat2.jpg',
-	'images/cat3.jpg',
-	'images/cat4.jpg',
-	'images/cat5.jpg',
-	];
+// ============================== Model ============================ 
+var model = {
+	currentCat: null,
+	Cats:[{
+		CatName: 'Matoux',
+		CatUrl: 'images/cat1.jpg',
+		CatCount: 0},
 
-var CatName = [
-	'Matoux', 
-	'Gustav',
-	'Ingo',
-	'Emil',
-	'Gunther'
-	];
+		{
+		CatName: 'Gustav',
+		CatUrl: 'images/cat2.jpg',
+		CatCount: 0},
 
-
-var Cataction = CatActions();
+		{
+		CatName: 'Ingo',
+		CatUrl: 'images/cat3.jpg',
+		CatCount: 0},
 	
-
-var CatScore = CatScores();
-
-var ClickStart = false;
-
-	// Gunction to create the CatScore
-function CatScores () {
-	var Catnb = [];
-	for (var i = 0; i < CatImg.length; i++) {
-		Catnb.push(0);
-	}
-	return Catnb;
-};
-
-function CatActions() {
-	var Catnb = [];
-	for (var i = 0; i < CatImg.length; i++) {
-		Catnb.push($('#Cat' +i));
-	}
-	return Catnb;
-};
-
-// Function to initialize the List of casts
-
-function CatInitialize() {
-	for (var i=0; i<CatImg.length;i++){
-		$('#cat-list').append('<br> <li id="cat'+ i +'">The cat n°' + i + ' is called ' + CatName[i] + ' and clicked ' +CatScore[i] + ' time(s)</li>');
-	}
-	ClickStart = true;
+		{
+		CatName: 'Emil',
+		CatUrl: 'images/cat4.jpg',
+		CatCount: 0},
+	
+		{
+		CatName: 'Gunther',
+		CatUrl: 'images/cat5.jpg',
+		CatCount: 0
+	}]
 };
 
 
-// Update the score of the single cats
-
-function CatUpdate(counter) {
-
-	var Cat = counter % CatImg.length; 
-	var $selector = $('#cat' + Cat);
-
- 	CatScore[Cat] = CatScore[Cat]+ 1;
-
- 	$selector.text('The cat n°' + Cat + ' is called ' + CatName[Cat] + ' and clicked ' + CatScore[Cat] + ' time(s)');	
-}
 
 
-// Simple function to add the TOTAL number of clicks 
-function ClickCounter(counter) {
-	//Udpate the image
-	CatDisplay(counter);
+// ============================== Octopus ============================ 
 
-	counter++;
-	$('#counter').text('You clicked the cats '+ counter+' time(s)');
+var octopus = {
+	init: function() {
+		//Take the first cat for install
+		model.currentCat = model.Cats[0];
 
-	
-	return counter;
-}
+		catListview.init();
+		catView.init();
+	},
 
+	getCat: function(){
+		return model.currentCat;
+	},
 
-// Enables to load the image
-function CatDisplay(counter) {
-	var Cat = counter % CatImg.length; 
+	getCats: function(){
+		return model.Cats;
+	},
 
-	$('#target').attr('src', CatImg[Cat]);
-	$('#catheader').text("Let's click on this beautiful cat, " + CatName[Cat] +'!');
+	addCount: function(cat){
+		cat.CatCount++;
+	},
 
-	// Update the value
-	if (ClickStart) {
-		CatUpdate(counter);
+	setCat: function(cat) {
+		model.currentCat = cat;
+
 	}
-}
+};
 
 
-// Starting the 
-function CatCliker() {
-	var i = 0;
-	
-	CatDisplay(i); 
-	CatInitialize();
-	
-	$('#target').click(function(e) {
-		i = ClickCounter(i);
-	});
 
-	Cataction.forEach(function(cat) {
-		console.log(cat);
-		cat.click(function(e){
-			console.log(e);
+// ============================== Views ============================ 
+
+	// -------------------- Cat View -------
+var catView = {
+
+	init: function() {
+		this.render();
+		$('#cattarget').click(function(e) {
+			octopus.addCount(model.currentCat);
+			catView.render();
 		});
-	});
-	
-	
-}
-	
-// Run the progamm
-CatCliker();
+	},
+
+	render: function() {
+		cat = octopus.getCat();
+
+		$('#catheader').text('This pretty cat is called ' + cat.CatName);
+		$('#cattarget').attr('src', cat.CatUrl);
+		$('#catcount').text('It was clicked ' + cat.CatCount + ' time(s).');
+	}
+
+};
+
+	// -------------------- Cat List View -------
+
+var catListview = {
+
+	init: function() {
+		this.render(); 
+		this.move();
+	},
+
+	render: function() {
+		var cats = octopus.getCats();
+		var i = 0;
+
+		cats.forEach(function(cat) {
+			var catId = 'cat' + i;
+			$('#cat-list').append('<li id="'+ catId +'"> This cat is called ' + cat.CatName +'</li>');
+			i++;
+		});
+	},
+
+	move: function(){
+		var cats = octopus.getCats();
+		var i = 0;
+
+		cats.forEach(function(cat) {
+			var catId = '#cat' + i;
+		
+			$(catId).click(function(e){
+				octopus.setCat(cat);
+				catView.render();				
+			});
+			i++;
+
+
+		});
+
+		console.log('catListview.move')
+	}
+};
+
+
+octopus.init();
