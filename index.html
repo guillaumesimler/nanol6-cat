@@ -13,20 +13,54 @@
 
 <body>
 	<!-- Build the list of cats to select on, outlined by a specific div - according to Udacity's advice-->
-	<div id="cat-selector">Choose a cat by clicking it
+	<section id="cat-selector">Choose a cat by clicking it
 		<br>
 		<ul id="cat-list"></ul>
-	</div>
+	</section>
 
 
 	<!-- Build the display area fpr the cats, outlined by a specific div - according to Udacity's advice-->
-	<div id="catdisplay-area">
+	<section id="catdisplay-area">
 		<div id="catheader">Let's click on this beautiful cat</div>
 
 		<img id="cattarget" src="images/cat1.jpg" alt="a cat">
 
 		<div id="catcount">WHAT ??!! You did not click on the cat!!!</div>
-	</div>
+	</section>
+
+
+	<!-- Build the admin section -->
+
+	<section id="AdminButton">
+		<button type="button">Admin Mode</button>
+	</section>
+
+		<!-- Place the real Admin display section-->
+
+	<section id="AdminDisplay">
+		<div>
+			The cat's name is: <input type="text" name="Cat" value="Catname"> 
+			<br>
+		</div>
+
+		<div>
+			The cat's Url is: <input type="text" name="Url" value="CatUrl"> <br>
+			<em>Please don't add the folder tree (images/), just the file name with its extension</em>
+			<br>
+
+		</div>
+
+		<div>
+			The cat's click number is: <input type="text" name="Click" value="Number of clicks"> <br>
+			<br>
+		</div>
+
+		<button type="button">Cancel</button>
+		<button type="button">Save</button>
+		
+
+	</section>
+
 
     <script type="text/javascript" src="js/libs/jquery.min.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
